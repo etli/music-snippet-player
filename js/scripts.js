@@ -16,7 +16,7 @@ function loadTrack($button) {
   audio.src = track;
   audio.load();
   // console.log('Loading...');
-
+  
   // audio.addEventListener('canplay', function() {
   //   console.log('Ready to play: ' + track);
     playTrack($button);
@@ -28,7 +28,7 @@ function playTrack($button) {
   $('icon', $button).removeClass().addClass('icon-volume-up');
   $('label', $button).text('Playing Preview');
 
-  audio.play();
+  fadeInTrack();
 }
 
 function resetTrack($button) {
@@ -36,5 +36,37 @@ function resetTrack($button) {
   $('icon', $button).removeClass().addClass('icon-play');
   $('label', $button).text('Preview');
 
-  audio.pause();
+  fadeOutTrack();
+}
+
+var fadeInOutLoop = undefined;
+
+function fadeInTrack() {
+  var v = 0;
+  audio.play();
+
+  if (fadeInOutLoop) clearInterval(fadeInOutLoop);
+  fadeInOutLoop = setInterval(function() {
+    if (v >= 1) {
+      clearInterval(fadeInOutLoop);
+      return;
+    }
+    audio.volume = v;
+    v += 0.1;
+  }, 100);
+}
+
+function fadeOutTrack() {
+  var v = 1;
+
+  if(fadeInOutLoop) clearInterval(fadeInOutLoop);
+  fadeInOutLoop = setInterval(function() {
+    if (v <= 0) {
+      clearInterval(fadeInOutLoop);
+      audio.pause();
+      return;
+    }
+    audio.volume = v;
+    v -= 0.1;
+  }, 100);
 }
