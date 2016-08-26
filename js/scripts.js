@@ -1,26 +1,26 @@
 var audio = new Audio('music/before-the-fall.wav');
 
-$('.song button').on('mouseover', function() {
+$('.song button').on('mouseenter', function() {
   loadTrack($(this));
-}).on('mouseout', function() {
+}).on('mouseleave', function() {
   resetTrack($(this));
 });
 
 function loadTrack($button) {
   var track = $button.attr('data-audio-src');
 
-  $button.removeClass().addClass('loading');
-  $('icon', $button).removeClass().addClass('icon-spinner animate-spin');
-  $('label', $button).text('Loading...');
+  // $button.removeClass().addClass('loading');
+  // $('icon', $button).removeClass().addClass('icon-spinner animate-spin');
+  // $('label', $button).text('Loading...');
 
   audio.src = track;
   audio.load();
-  console.log('Loading...');
+  // console.log('Loading...');
 
-  audio.addEventListener('canplay', function() {
-    console.log('Ready to play: ' + track);
+  // audio.addEventListener('canplay', function() {
+  //   console.log('Ready to play: ' + track);
     playTrack($button);
-  });
+  // });
 }
 
 function playTrack($button) {
