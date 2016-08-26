@@ -1,4 +1,5 @@
 var $playButton = $('#play-button');
+var audio = new Audio('music/before-the-fall.wav');
 
 $playButton.on('mouseover', function() {
   loadTrack($(this));
@@ -13,19 +14,27 @@ function loadTrack($button) {
   $('icon', $button).removeClass().addClass('icon-spinner animate-spin');
   $('label', $button).text('Loading...');
 
-  setTimeout(function() {
+  audio.load();
+  console.log('Loading...');
+
+  audio.addEventListener('canplay', function() {
+    console.log('Ready to play');
     playTrack($button);
-  }, 500);
+  });
 }
 
 function playTrack($button) {
   $button.removeClass().addClass('playing');
   $('icon', $button).removeClass().addClass('icon-volume-up');
   $('label', $button).text('Playing Preview');
+
+  audio.play();
 }
 
 function resetTrack($button) {
   $button.removeClass().addClass('default');
   $('icon', $button).removeClass().addClass('icon-play');
   $('label', $button).text('Preview');
+
+  audio.pause();
 }
