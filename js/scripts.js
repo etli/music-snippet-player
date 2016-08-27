@@ -1,20 +1,14 @@
-var audio = new Audio('music/before-the-fall.wav');
-
 $('.song button').on('mouseenter', function() {
-  loadTrack($(this));
+  playTrack($(this));
 }).on('mouseleave', function() {
   resetTrack($(this));
 });
 
-function loadTrack($button) {
-  var track = $button.attr('data-audio-src');
-
+function loadTrack($button) { 
   // $button.removeClass().addClass('loading');
   // $('icon', $button).removeClass().addClass('icon-spinner animate-spin');
   // $('label', $button).text('Loading...');
-
-  audio.src = track;
-  audio.load();
+  
   // console.log('Loading...');
   
   // audio.addEventListener('canplay', function() {
@@ -28,7 +22,9 @@ function playTrack($button) {
   $('icon', $button).removeClass().addClass('icon-volume-up');
   $('label', $button).text('Playing Preview');
 
-  fadeInTrack();
+  var audio = $button.next('audio')[0];
+  // audio.load();
+  fadeInTrack(audio);
 }
 
 function resetTrack($button) {
@@ -36,37 +32,18 @@ function resetTrack($button) {
   $('icon', $button).removeClass().addClass('icon-play');
   $('label', $button).text('Preview');
 
-  fadeOutTrack();
+  var audio = $button.next('audio')[0];
+  fadeOutTrack(audio);
 }
 
-var fadeInOutLoop = undefined;
-
-function fadeInTrack() {
-  var v = 0;
+function fadeInTrack(audio) {
+  audio.volume = 0;
   audio.play();
-
-  if (fadeInOutLoop) clearInterval(fadeInOutLoop);
-  fadeInOutLoop = setInterval(function() {
-    if (v >= 1) {
-      clearInterval(fadeInOutLoop);
-      return;
-    }
-    audio.volume = v;
-    v += 0.1;
-  }, 100);
+  $(audio).stop().animate({volume: 1}, 1000);
 }
 
-function fadeOutTrack() {
-  var v = 1;
-
-  if(fadeInOutLoop) clearInterval(fadeInOutLoop);
-  fadeInOutLoop = setInterval(function() {
-    if (v <= 0) {
-      clearInterval(fadeInOutLoop);
-      audio.pause();
-      return;
-    }
-    audio.volume = v;
-    v -= 0.1;
-  }, 100);
+function fadeOutTrack(audio) {
+  $(audio).stop().animate({volume: 0}, 1000, function() {
+    audio.pause();
+  });
 }
