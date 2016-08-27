@@ -1,21 +1,28 @@
+// 'use strict';
+
 $('.song button').on('mouseenter', function() {
-  playTrack($(this));
+  loadTrack($(this));
 }).on('mouseleave', function() {
   resetTrack($(this));
 });
 
 function loadTrack($button) { 
-  // $button.removeClass().addClass('loading');
-  // $('icon', $button).removeClass().addClass('icon-spinner animate-spin');
-  // $('label', $button).text('Loading...');
-  
-  // console.log('Loading...');
-  
-  // audio.addEventListener('canplay', function() {
-  //   console.log('Ready to play: ' + track);
+  var audio = $button.next('audio')[0];
+
+  if (!$(audio).attr('data-canplay')) {
+    $button.removeClass().addClass('loading');
+    $('icon', $button).removeClass().addClass('icon-spinner animate-spin');
+    $('label', $button).text('Loading...');
+
+    audio.load();
+    audio.addEventListener('canplay', function() {
+      $(audio).attr('data-canplay', 'canplay');
+      playTrack($button);
+    });
+  } else {
     playTrack($button);
-  // });
-}
+  }
+};
 
 function playTrack($button) {
   $button.removeClass().addClass('playing');
@@ -23,9 +30,8 @@ function playTrack($button) {
   $('label', $button).text('Playing Preview');
 
   var audio = $button.next('audio')[0];
-  // audio.load();
   fadeInTrack(audio);
-}
+};
 
 function resetTrack($button) {
   $button.removeClass().addClass('default');
@@ -34,16 +40,16 @@ function resetTrack($button) {
 
   var audio = $button.next('audio')[0];
   fadeOutTrack(audio);
-}
+};
 
 function fadeInTrack(audio) {
   audio.volume = 0;
   audio.play();
   $(audio).stop().animate({volume: 1}, 1000);
-}
+};
 
 function fadeOutTrack(audio) {
   $(audio).stop().animate({volume: 0}, 1000, function() {
     audio.pause();
   });
-}
+};
